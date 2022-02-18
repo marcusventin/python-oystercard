@@ -1,6 +1,7 @@
 class Oystercard():
     MAXIMUM_BALANCE = 90
     MINIMUM_BALANCE = 1
+    MINIMUM_FARE = 1
 
     def __init__(self):
         self.balance = 0
@@ -16,7 +17,7 @@ class Oystercard():
         else:
             self.balance += top_up
     
-    def deduct(self, fare):
+    def deduct(self, fare=MINIMUM_FARE):
         self.balance -= fare
     
     def touch_in(self):
@@ -27,3 +28,4 @@ class Oystercard():
 
     def touch_out(self):
         self.in_journey = False
+        self.deduct()

@@ -49,5 +49,12 @@ class TestOystercard():
         with pytest.raises(Exception,
             match="Insufficient balance to travel."):
             card.touch_in()
+    
+    def test_touch_out_deducts_fare_from_balance(self):
+        card = Oystercard()
+        card.balance = card.MAXIMUM_BALANCE
+        card.in_journey = True
+        card.touch_out()
+        assert card.balance == card.MAXIMUM_BALANCE - card.MINIMUM_FARE
 
 
