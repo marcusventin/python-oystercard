@@ -34,7 +34,7 @@ class TestOystercard():
         card = Oystercard()
         card.balance = card.MAXIMUM_BALANCE
         assert card.in_journey == False
-        card.touch_in()
+        card.touch_in("entry_station")
         assert card.in_journey == True
     
     def test_touch_out_sets_in_journey_to_false(self):
@@ -48,7 +48,7 @@ class TestOystercard():
         card.balance = card.MINIMUM_BALANCE - 1
         with pytest.raises(Exception,
             match="Insufficient balance to travel."):
-            card.touch_in()
+            card.touch_in("entry_station")
     
     def test_touch_out_deducts_fare_from_balance(self):
         card = Oystercard()
@@ -57,4 +57,16 @@ class TestOystercard():
         card.touch_out()
         assert card.balance == card.MAXIMUM_BALANCE - card.MINIMUM_FARE
 
+    def test_touch_in_saves_entry_station(self):
+        card = Oystercard()
+        card.balance = card.MAXIMUM_BALANCE
+        card.touch_in("entry_station")
+        assert card.entry_station == "entry_station"
+
+    def test_touch_out_sets_entry_station_to_None(self):
+        card = Oystercard()
+        card.balance = card.MAXIMUM_BALANCE
+        card.touch_in("entry_station")
+        card.touch_out()
+        assert card.entry_station == None
 

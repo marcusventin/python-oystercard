@@ -6,6 +6,7 @@ class Oystercard():
     def __init__(self):
         self.balance = 0
         self.in_journey = False
+        self.entry_station = None
     
     def top_up(self, top_up):
         if type(top_up) != int:
@@ -20,12 +21,14 @@ class Oystercard():
     def deduct(self, fare=MINIMUM_FARE):
         self.balance -= fare
     
-    def touch_in(self):
+    def touch_in(self, entry_station):
         if self.balance < self.MINIMUM_BALANCE:
             raise Exception("Insufficient balance to travel.")
         else:
             self.in_journey = True
+            self.entry_station = entry_station
 
     def touch_out(self):
         self.in_journey = False
         self.deduct()
+        self.entry_station = None
