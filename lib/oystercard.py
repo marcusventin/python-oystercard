@@ -1,5 +1,6 @@
 class Oystercard():
     MAXIMUM_BALANCE = 90
+    MINIMUM_BALANCE = 1
 
     def __init__(self):
         self.balance = 0
@@ -19,7 +20,10 @@ class Oystercard():
         self.balance -= fare
     
     def touch_in(self):
-        self.in_journey = True
+        if self.balance < self.MINIMUM_BALANCE:
+            raise Exception("Insufficient balance to travel.")
+        else:
+            self.in_journey = True
 
     def touch_out(self):
         self.in_journey = False
