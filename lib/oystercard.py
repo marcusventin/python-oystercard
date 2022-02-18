@@ -3,6 +3,7 @@ class Oystercard():
 
     def __init__(self):
         self.balance = 0
+        self.in_journey = False
     
     def top_up(self, top_up):
         if type(top_up) != int:
@@ -16,3 +17,9 @@ class Oystercard():
     
     def deduct(self, fare):
         self.balance -= fare
+    
+    def touch_in(self):
+        self.in_journey = True
+
+    def touch_out(self):
+        self.in_journey = False

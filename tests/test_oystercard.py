@@ -29,5 +29,17 @@ class TestOystercard():
         card.deduct(number)
 
         assert card.MAXIMUM_BALANCE - number == card.balance
+    
+    def test_touch_in_sets_in_journey_to_true(self):
+        card = Oystercard()
+        assert card.in_journey == False
+        card.touch_in()
+        assert card.in_journey == True
+    
+    def test_touch_out_sets_in_journey_to_false(self):
+        card = Oystercard()
+        card.in_journey = True
+        card.touch_out()
+        assert card.in_journey == False
 
 
