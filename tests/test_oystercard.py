@@ -21,4 +21,13 @@ class TestOystercard():
         with pytest.raises(Exception,
             match = "You can't exceed the maximum balance."):
             card.top_up(1)
+    
+    def test_deduct_subtracts_fare_from_balance(self):
+        card = Oystercard()
+        card.top_up(card.MAXIMUM_BALANCE)
+        number = randint(1, card.MAXIMUM_BALANCE)
+        card.deduct(number)
+
+        assert card.MAXIMUM_BALANCE - number == card.balance
+
 

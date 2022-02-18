@@ -13,3 +13,6 @@ class Oystercard():
             raise Exception("You can't exceed the maximum balance.")
         else:
             self.balance += top_up
+    
+    def deduct(self, fare):
+        self.balance -= fare
