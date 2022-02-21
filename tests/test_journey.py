@@ -1,10 +1,12 @@
 from unittest.mock import MagicMock
 
 from lib.journey import Journey
+from lib.oystercard import Oystercard
 
 class TestJourney():
     def test_start_journey_sets_in_journey_to_True(self):
-        journey = Journey()
+        card = MagicMock()
+        journey = Journey(card)
 
         station = MagicMock()
         station.name = 'test_entry'
@@ -15,7 +17,8 @@ class TestJourney():
         assert journey.in_journey == True
     
     def test_end_journey_sets_in_journey_to_False(self):
-        journey = Journey()
+        card = MagicMock()
+        journey = Journey(card)
 
         station = MagicMock()
         station.name = 'test_exit'
@@ -26,11 +29,13 @@ class TestJourney():
         assert journey.in_journey == False
     
     def test_journey_history_is_empty_by_default(self):
-        journey = Journey()
+        card = MagicMock()
+        journey = Journey(card)
         assert len(journey.journey_history) == 0
 
     def test_start_journey_adds_entry_station_to_current_journey(self):
-        journey = Journey()
+        card = MagicMock()
+        journey = Journey(card)
         assert journey.current_journey == {}
 
         station = MagicMock()
@@ -41,7 +46,8 @@ class TestJourney():
         assert journey.current_journey['entry_station'] == 'test_station'
     
     def test_end_journey_adds_completed_journey_to_journey_history(self):
-        journey = Journey()
+        card = MagicMock()
+        journey = Journey(card)
         assert journey.journey_history == []
 
         entry_station = MagicMock()
@@ -56,3 +62,46 @@ class TestJourney():
         assert len(journey.journey_history) == 1
         assert journey.journey_history[0]['entry_station'] == 'test_entry'
         assert journey.journey_history[0]['exit_station'] == 'test_exit'
+    
+    def test_start_journey_deducts_penalty_fare_if_uncompleted_journey(self):
+        card = Oystercard()
+        card.balance = card.MAXIMUM_BALANCE
+
+        station = MagicMock()
+        station.name = 'test_station'
+
+        journey = Journey(card)
+        journey.current_journey = {'entry_station': 'test_entry',}
+
+        journey.start_journey(station)
+
+        assert card.balance == card.MAXIMUM_BALANCE - card.PENALTY_FARE
+    
+    def test_end_journey_deducts_penalty_fare_if_no_entry_station(self):
+        card = Oystercard()
+        card.balance = card.MAXIMUM_BALANCE
+
+        station = MagicMock()
+        station.name = 'test_station'
+
+        journey = Journey(card)
+        assert journey.current_journey == {}
+
+        journey.end_journey(station)
+
+        assert card.balance == card.MAXIMUM_BALANCE - card.PENALTY_FARE
+    
+    def test_end_journey_deducts_min_fare_if_completed_journey(self):
+        card = Oystercard()
+        card.balance = card.MAXIMUM_BALANCE
+
+        station = MagicMock()
+        station.name = 'test_station'
+
+        journey = Journey(card)
+        journey.current_journey = {'entry_station': 'test_entry',}
+
+        journey.end_journey(station)
+
+        assert card.balance == card.MAXIMUM_BALANCE - card.MINIMUM_FARE
+

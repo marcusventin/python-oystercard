@@ -41,14 +41,3 @@ class TestOystercard():
         with pytest.raises(Exception,
             match="Insufficient balance to travel."):
             card.touch_in(entry_station)
-    
-    def test_touch_out_deducts_fare_from_balance(self):
-        card = Oystercard()
-        card.balance = card.MAXIMUM_BALANCE
-        card.in_journey = True
-
-        exit_station = MagicMock()
-        exit_station.name = 'exit_station'
-
-        card.touch_out(exit_station)
-        assert card.balance == card.MAXIMUM_BALANCE - card.MINIMUM_FARE
