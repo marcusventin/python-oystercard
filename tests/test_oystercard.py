@@ -1,5 +1,6 @@
 from random import randint
 import pytest
+from unittest.mock import MagicMock
 
 from lib.oystercard import Oystercard
 
@@ -34,40 +35,65 @@ class TestOystercard():
         card = Oystercard()
         card.balance = card.MAXIMUM_BALANCE
         assert card.in_journey == False
-        card.touch_in("entry_station")
+
+        entry_station = MagicMock()
+        entry_station.name = 'entry_station'
+
+        card.touch_in(entry_station)
         assert card.in_journey == True
     
     def test_touch_out_sets_in_journey_to_false(self):
         card = Oystercard()
         card.in_journey = True
-        card.touch_out("exit_station")
+
+        exit_station = MagicMock()
+        exit_station.name = 'exit_station'
+        card.touch_out(exit_station)
         assert card.in_journey == False
     
     def test_touch_in_raises_error_if_balance_is_below_minimum(self):
         card = Oystercard()
         card.balance = card.MINIMUM_BALANCE - 1
+
+        entry_station = MagicMock()
+        entry_station.name = 'entry_station'
+
         with pytest.raises(Exception,
             match="Insufficient balance to travel."):
-            card.touch_in("entry_station")
+            card.touch_in(entry_station)
     
     def test_touch_out_deducts_fare_from_balance(self):
         card = Oystercard()
         card.balance = card.MAXIMUM_BALANCE
         card.in_journey = True
-        card.touch_out("exit_station")
+
+        exit_station = MagicMock()
+        exit_station.name = 'exit_station'
+
+        card.touch_out(exit_station)
         assert card.balance == card.MAXIMUM_BALANCE - card.MINIMUM_FARE
 
     def test_touch_in_saves_entry_station(self):
         card = Oystercard()
         card.balance = card.MAXIMUM_BALANCE
-        card.touch_in("entry_station")
-        assert card.entry_station == "entry_station"
+
+        entry_station = MagicMock()
+        entry_station.name = 'entry_station'
+
+        card.touch_in(entry_station)
+        assert card.entry_station.name == "entry_station"
 
     def test_touch_out_sets_entry_station_to_None(self):
         card = Oystercard()
         card.balance = card.MAXIMUM_BALANCE
-        card.touch_in("entry_station")
-        card.touch_out("exit_station")
+
+        entry_station = MagicMock()
+        entry_station.name = 'entry_station'
+        exit_station = MagicMock()
+        exit_station.name = 'exit_station'
+
+        card.touch_in(entry_station)
+        card.touch_out(exit_station)
         assert card.entry_station == None
     
     def test_journey_history_is_empty_by_default(self):
@@ -78,16 +104,27 @@ class TestOystercard():
         card = Oystercard()
         card.balance = card.MAXIMUM_BALANCE
         assert card.current_journey == {}
-        card.touch_in("test_station")
+
+        station = MagicMock()
+        station.name = 'test_station'
+        card.touch_in(station)
 
         assert "entry_station" in card.current_journey.keys()
+        assert card.current_journey['entry_station'] == 'test_station'
     
     def test_touch_out_adds_completed_journey_to_journey_history(self):
         card = Oystercard()
         card.balance = card.MAXIMUM_BALANCE
         assert card.journey_history == []
-        card.touch_in("test_entry")
-        card.touch_out("test_exit")
+
+        entry_station = MagicMock()
+        entry_station.name = 'test_entry'
+
+        exit_station = MagicMock()
+        exit_station.name = 'test_exit'
+
+        card.touch_in(entry_station)
+        card.touch_out(exit_station)
 
         assert len(card.journey_history) == 1
         assert card.journey_history[0]['entry_station'] == 'test_entry'

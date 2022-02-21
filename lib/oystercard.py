@@ -29,12 +29,12 @@ class Oystercard():
         else:
             self.in_journey = True
             self.entry_station = entry_station
-            self.current_journey['entry_station'] = entry_station
+            self.current_journey['entry_station'] = entry_station.name
 
     def touch_out(self, exit_station):
         self.in_journey = False
         self.deduct()
         self.entry_station = None
-        self.current_journey['exit_station'] = exit_station
+        self.current_journey['exit_station'] = exit_station.name
         self.journey_history.append(self.current_journey)
         self.current_journey = {}
