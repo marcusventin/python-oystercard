@@ -1,3 +1,5 @@
+from lib.journey import Journey
+
 class Oystercard():
     MAXIMUM_BALANCE = 90
     MINIMUM_BALANCE = 1
@@ -5,9 +7,7 @@ class Oystercard():
 
     def __init__(self):
         self.balance = 0
-        self.in_journey = False
-        self.journey_history = []
-        self.current_journey = {}
+        self.journey = Journey()
     
     def top_up(self, top_up):
         if type(top_up) != int:
@@ -26,12 +26,10 @@ class Oystercard():
         if self.balance < self.MINIMUM_BALANCE:
             raise Exception("Insufficient balance to travel.")
         else:
-            self.in_journey = True
-            self.current_journey['entry_station'] = entry_station.name
-
+            self.journey.start_journey(entry_station)
+            
     def touch_out(self, exit_station):
-        self.in_journey = False
+        self.journey.end_journey(exit_station)
         self.deduct()
-        self.current_journey['exit_station'] = exit_station.name
-        self.journey_history.append(self.current_journey)
-        self.current_journey = {}
+        
+        
