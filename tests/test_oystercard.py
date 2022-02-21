@@ -72,29 +72,6 @@ class TestOystercard():
 
         card.touch_out(exit_station)
         assert card.balance == card.MAXIMUM_BALANCE - card.MINIMUM_FARE
-
-    def test_touch_in_saves_entry_station(self):
-        card = Oystercard()
-        card.balance = card.MAXIMUM_BALANCE
-
-        entry_station = MagicMock()
-        entry_station.name = 'entry_station'
-
-        card.touch_in(entry_station)
-        assert card.entry_station.name == "entry_station"
-
-    def test_touch_out_sets_entry_station_to_None(self):
-        card = Oystercard()
-        card.balance = card.MAXIMUM_BALANCE
-
-        entry_station = MagicMock()
-        entry_station.name = 'entry_station'
-        exit_station = MagicMock()
-        exit_station.name = 'exit_station'
-
-        card.touch_in(entry_station)
-        card.touch_out(exit_station)
-        assert card.entry_station == None
     
     def test_journey_history_is_empty_by_default(self):
         card = Oystercard()
