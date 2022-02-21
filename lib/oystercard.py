@@ -7,6 +7,8 @@ class Oystercard():
         self.balance = 0
         self.in_journey = False
         self.entry_station = None
+        self.journey_history = []
+        self.current_journey = {}
     
     def top_up(self, top_up):
         if type(top_up) != int:
@@ -27,8 +29,12 @@ class Oystercard():
         else:
             self.in_journey = True
             self.entry_station = entry_station
+            self.current_journey['entry_station'] = entry_station
 
-    def touch_out(self):
+    def touch_out(self, exit_station):
         self.in_journey = False
         self.deduct()
         self.entry_station = None
+        self.current_journey['exit_station'] = exit_station
+        self.journey_history.append(self.current_journey)
+        self.current_journey = {}
