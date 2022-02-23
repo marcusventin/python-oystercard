@@ -28,8 +28,10 @@ class Oystercard():
             raise Exception("Insufficient balance to travel.")
         else:
             self.journey.start_journey(entry_station)
+            self.deduct(self.journey.fare)
             
     def touch_out(self, exit_station):
         self.journey.end_journey(exit_station)
+        self.deduct(self.journey.fare)
         
         
